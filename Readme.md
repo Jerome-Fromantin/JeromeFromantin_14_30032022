@@ -3,7 +3,7 @@ Ce travail est réalisé dans le cadre de la formation "Développeur JavaScript 
 Ce projet 14 consiste en la migration d'une application et de ses plugins JQuery vers une application React
 avec des librairies React de npm.
 
-Installation et première mise à jour : 01-04-2022 18h25
+Mise à jour : 01-04-2022 18h25
 
 Travail réalisé :
 - Création de l'application React pour la migration.
