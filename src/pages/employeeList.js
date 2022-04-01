@@ -17,7 +17,7 @@ const EmployeeList = () => {
             </Helmet>
             <Container id="employee-div">
                 <h1>Current Employees</h1>
-                <table id="employee-table" class="display"></table>
+                <table id="employee-table" className="display"></table>
                 <Link to="/">Home</Link>
             </Container>
         </HelmetProvider>)
