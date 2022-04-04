@@ -62,10 +62,11 @@ const CreateEmployee = () => {
     // This function (to improve) displays an error message when a value in a field is invalid
     // or a success message when everything is fine.
     function saveEmployee2() {
-        if (firstNameInputValue === "" || firstNameInputValue.length < 2 || !/^[^\d]+$/.test(firstNameInputValue)) {
+        // Conditions used : If there is 0 or 1 character OR if there is a number.
+        if (firstNameInputValue.length < 2 || !/^[^\d]+$/.test(firstNameInputValue)) {
             alert("The first name field is invalid.")
         }
-        else if (lastNameInputValue === "" || lastNameInputValue.length < 2 || !/^[^\d]+$/.test(lastNameInputValue)) {
+        else if (lastNameInputValue.length < 2 || !/^[^\d]+$/.test(lastNameInputValue)) {
             alert("The last name field is invalid.")
         }
         else if (birthDateInputValue === "") {
@@ -74,12 +75,14 @@ const CreateEmployee = () => {
         else if (startDateInputValue === "") {
             alert("The start date field is empty.")
         }
-        else if (streetInputValue === "" || streetInputValue.length < 2) {
+        else if (streetInputValue.length < 2) {
             alert("The street field is invalid.")
         }
         else if (cityInputValue === "" || !/^[^\d]+$/.test(cityInputValue)) {
             alert("The city field is invalid.")
         }
+        // Conditions used : If the field is empty OR if the number is less than 5 digits long
+        // OR if the number is more than 5 digits long.
         else if (zipCodeInputValue === "" || zipCodeInputValue < 10000 || zipCodeInputValue >= 100000) {
             alert("The zip code field is invalid.")
         }
@@ -118,13 +121,13 @@ const CreateEmployee = () => {
                         <Label htmlFor="date-of-birth">Date of Birth</Label>
                         <Datetime id="date-of-birth" inputProps={inputProps} value={birthDateInputValue}
                         onChange={(value) => setBirthDateInputValue(value)} closeOnSelect={true} timeFormat={false}/>
+                        {/* "inputProps" allows to customize the appearance of the input,
+                        "closeOnSelect" closes the picker when a day is clicked upon and
+                        "timeFormat" hides the time of the day in the picker and in the input.*/}
 
                         <Label htmlFor="start-date">Start Date</Label>
                         <Datetime id="start-date" inputProps={inputProps} value={startDateInputValue}
                         onChange={(value) => setStartDateInputValue(value)} closeOnSelect={true} timeFormat={false}/>
-                        {/* "inputProps" allows to customize the appearance of the input,
-                        "closeOnSelect" closes the picker when a day is clicked upon and
-                        "timeFormat" hides the time of the day in the picker and in the input.*/}
 
                         <Fieldset className="address">
                             <legend>Address</legend>
