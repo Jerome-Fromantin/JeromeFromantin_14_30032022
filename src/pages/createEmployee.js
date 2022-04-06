@@ -120,14 +120,17 @@ const CreateEmployee = () => {
 
                         <Label htmlFor="date-of-birth">Date of Birth</Label>
                         <Datetime id="date-of-birth" inputProps={inputProps} value={birthDateInputValue}
-                        onChange={(value) => setBirthDateInputValue(value)} closeOnSelect={true} timeFormat={false}/>
+                        onChange={(value) => setBirthDateInputValue(value)} closeOnSelect={true} timeFormat={false}
+                        dateFormat="DD/MM/YYYY"/>
                         {/* "inputProps" allows to customize the appearance of the input,
-                        "closeOnSelect" closes the picker when a day is clicked upon and
-                        "timeFormat" hides the time of the day in the picker and in the input.*/}
+                        "closeOnSelect" closes the picker when a day is clicked upon,
+                        "timeFormat" hides the time of the day in the picker and in the input and
+                        "dateFormat" sets the order of the numbers in the date.*/}
 
                         <Label htmlFor="start-date">Start Date</Label>
                         <Datetime id="start-date" inputProps={inputProps} value={startDateInputValue}
-                        onChange={(value) => setStartDateInputValue(value)} closeOnSelect={true} timeFormat={false}/>
+                        onChange={(value) => setStartDateInputValue(value)} closeOnSelect={true} timeFormat={false}
+                        dateFormat="DD/MM/YYYY"/>
 
                         <Fieldset className="address">
                             <legend>Address</legend>
