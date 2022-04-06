@@ -3,7 +3,7 @@ Ce travail est réalisé dans le cadre de la formation "Développeur JavaScript 
 Ce projet 14 consiste en la migration d'une application et de ses plugins JQuery vers une application React
 avec des librairies React de npm.
 
-Mise à jour : 04-04-2022 19h00
+Mise à jour : 06-04-2022 18h30
 
 Travail réalisé :
 - Création de l'application React pour la migration.
@@ -19,13 +19,16 @@ d'erreur pour les champs du formulaire.
 - Customisation et utilisation du nouveau composant <Datetime/> dans 2 champs du formulaire.
 - Légère amélioration de la fonction gérant les messages d'erreur du formulaire.
 - Installation de la librairie "react-table" pour utiliser un tableau dans la 2ème page.
-- Mise en place partielle du tableau avec certaines de ses fonctionnalités (dont le classement par catégories).
+- Mise en place partielle du tableau avec certaines de ses fonctionnalités : classement par catégories, pagination,
+"pageSize".
+- Publication sur npm de la version test de la librairie externe à installer dans l'appli.
 
 Travail à faire (entre autres) :
+- Terminer la mise en place du tableau : Améliorer l'affichage du résultat de la pagination et installer la fonction
+"Search".
 - Terminer l'implémentation des 2 pages de l'application.
-- Terminer la mise en place du tableau.
 - Mettre en place la librairie React npm pour remplacer le dernier plugin JQuery : menu déroulant.
-- Créer la librairie React npm pour remplacer le dernier plugin JQuery : modale.
+- Implémenter et publier la version finale de la librairie React npm pour la modale.
 - Mettre en place les documentations nécessaires.
 - Faire les tests de performance des 2 versions de l'application.
 - Et d'autres choses ??
