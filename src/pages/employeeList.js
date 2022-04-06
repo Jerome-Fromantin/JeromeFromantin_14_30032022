@@ -3,8 +3,8 @@ import { Helmet, HelmetProvider } from 'react-helmet-async'
 import styled from 'styled-components'
 // Imports to use the table in the page.
 import { useMemo } from 'react'
-import { useTable, useSortBy } from 'react-table'
-//import { usePagination, useSortBy } from 'react-table'
+import { useTable, useSortBy, usePagination } from 'react-table'
+import FakeData from '../source/fakeData'
 
 // Use of styled components.
 const Container = styled.div`
@@ -16,7 +16,7 @@ const Container = styled.div`
 const AboveTable = styled.div`
     display: flex;
     justify-content: space-between;
-    width: 65%;
+    width: 80%;
     margin-top: 20px;
 `
 const Input = styled.input`
@@ -24,7 +24,7 @@ const Input = styled.input`
     border-radius: 5px;
 `
 const Table = styled.table`
-    width: 65%;
+    width: 80%;
     border-collapse: collapse;
     margin-top: 20px;
 `
@@ -41,33 +41,26 @@ const BodyCell = styled.td`
     text-align: center;
     padding: 10px;
 `
+const Pagination = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-top: 20px;
+`
+const Pagispan = styled.span`
+    font-weight: bold;
+    &:hover {
+        cursor: pointer;
+    }
+    &.disabled {
+        color: gray;
+        font-weight: normal;
+    }
+`
 
 const EmployeeList = () => {
-    // Temporary fake data to test the table in the page.
-    const data = useMemo(() => [
-        {
-            firstName: "Jérôme",
-            lastName: "Fromantin",
-            startDate: "03/18/2021",
-            department: "Sales",
-            birthDate: "07/23/1971",
-            street: "Wisteria Lane",
-            city: "Fairview",
-            state: "California",
-            zipCode: "87000"
-        },
-        {
-            firstName: "Annie",
-            lastName: "Versaire",
-            startDate: "01/01/2022",
-            department: "Human Resources",
-            birthDate: "11/02/1968",
-            street: "5th Avenue",
-            city: "New York",
-            state: "New York",
-            zipCode: "75120"
-        }
-    ], [])
+    // Fake data to use the table in the page.
+    const data = useMemo(() => FakeData, [])
 
     // Columns of the table.
     const columns = useMemo(() => [
@@ -112,25 +105,34 @@ const EmployeeList = () => {
     // NOTE : "data" and "columns" are necessary words. It won't work without them !!
 
     // We use the hook "useTable" with the data and the columns defined above to create a table instance.
-    //const tableInstance = useTable({columns, data})
-    
-    const tableInstance = useTable({columns, data}, useSortBy)
-
-    // CI-DESSOUS, VERSION AVEC PAGINATION ET RANGEMENT DES LIGNES.
-    //const tableInstance = useTable({columns, data}, usePagination, useSortBy)
+    // In this first hook, we add the hooks we need to have more functionalities.
+    const tableInstance = useTable(
+        {columns, data, initialState: {pageIndex: 0, rowIndex: 0}},
+        useSortBy, usePagination
+    )
 
     // We define the props we will use in the table.
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        //rows, // Without pagination.
+        page, // "page" has only the rows for the active page.
         prepareRow,
+        // The following are used for pagination.
+        canPreviousPage,
+        canNextPage,
+        previousPage,
+        nextPage,
+        pageOptions,
+        setPageSize,
+        state: {pageSize, pageIndex, rowIndex}
+        // Above can be replaced by "state: {pageIndex, pageSize}" to display the number of the page.
     } = tableInstance
 
     // This function checks if the table is empty.
     function emptyTable() {
-        if (rows.length === 0) {
+        if (page.length === 0) {
              return (<tr><BodyCell colSpan={9}>No data available in table.</BodyCell></tr>)
         }
     }
@@ -150,15 +152,16 @@ const EmployeeList = () => {
                 <AboveTable>
                     <div>
                         Show&nbsp;
-                        <select name="entries" id="entries">
-                            <option>10</option>
-                            <option>25</option>
-                            <option>50</option>
-                            <option>100</option>
+                        <select name="entries" id="entries" value={pageSize}
+                        onChange={e => {setPageSize(Number(e.target.value))}}>
+                            {[2, 3, 4, 10, 25, 50, 100].map(pageSize => (
+                                <option key={pageSize} value={pageSize}>{pageSize}</option>
+                            ))}
                         </select>
                         &nbsp;entries
                     </div>
                     <div>Search: <Input type="text"/></div>
+                    {/* Pour Search, utiliser GlobalFilter. */}
                 </AboveTable>
 
                 {/* Below is the structure and the style of the table. */}
@@ -176,9 +179,9 @@ const EmployeeList = () => {
                                     <Headers {...column.getHeaderProps(column.getSortByToggleProps())}>
                                         {// Render the header.
                                         column.render("Header")}
-                                        {/* Add a sort direction indicator. TO MODIFY !! */}
+                                        {/* Add a sort direction indicator. */}
                                         <span>
-                                            {column.isSorted ? column.isSortedDesc ? "+-" : "-+" : ""}
+                                            {column.isSorted ? column.isSortedDesc ? "⬆️" : "⬇️" : "↕️"}
                                         </span>
                                     </Headers>
                                 ))}
@@ -189,7 +192,7 @@ const EmployeeList = () => {
                     <Tbody {...getTableBodyProps()}>
                         {emptyTable()}
                         {// Loop over the table rows.
-                        rows.map(row => {
+                        page.map((row, i) => {
                             // Prepare the row for display.
                             prepareRow(row)
                             return (
@@ -210,6 +213,24 @@ const EmployeeList = () => {
                         })}
                     </Tbody>
                 </Table>
+
+                <Pagination>
+                    {/*First possible display.
+                    <div>Showing page {pageIndex + 1} of {pageOptions.length}</div>*/}
+                    {pageOptions.length === 1 ? (
+                        <div>Showing {page.length} of {page.length} entries</div>
+                    ) : (
+                        //<div>Showing {page.length} of ~{pageOptions.length * pageSize} entries</div>
+                        <div>Showing {(pageIndex + 1) + pageIndex} to {(pageIndex + 1) * pageSize} of
+                        ~{pageOptions.length * pageSize} entries</div>
+                    )}
+                    <div>
+                        <Pagispan onClick={() => previousPage()}
+                        className={`${canPreviousPage ? "active" : "disabled"}`}>Previous</Pagispan>
+                        <Pagispan style={{marginLeft: "30px"}} onClick={() => nextPage()}
+                        className={`${canNextPage ? "active" : "disabled"}`}>Next</Pagispan>
+                    </div>
+                </Pagination>
 
                 <Link to="/" style={{marginTop: "40px"}}>Home</Link>
                 
