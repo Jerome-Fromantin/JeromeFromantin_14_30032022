@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import Datetime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css'
 import '../index.css'
+// Import to use the select library in the page.
+import Select from 'react-select'
 
 // Use of styled components.
 const Title = styled.div`
@@ -35,12 +37,6 @@ const Fieldset = styled.fieldset`
     ${borderStyle}
     margin-top: 10px;
 `
-const Select = styled.select`
-    width: 260px;
-    font-size: 16px;
-    padding: 5px 0 0 10px;
-    ${borderStyle}
-`
 const Button = styled.button`
     ${borderStyle}
     margin-top: 20px;
@@ -56,12 +52,16 @@ const CreateEmployee = () => {
     const [startDateInputValue, setStartDateInputValue] = useState("")
     const [streetInputValue, setStreetInputValue] = useState("")
     const [cityInputValue, setCityInputValue] = useState("")
+    const [stateSelectedOption, setStateSelectedOption] = useState(null)
     const [zipCodeInputValue, setZipCodeInputValue] = useState("")
+    const [deptSelectedOption, setDeptSelectedOption] = useState(null)
     // The different "useState" above allow to keep the data of the different fields in the form.
 
-    // This function (to improve) displays an error message when a value in a field is invalid
+    // This function (TO FINISH !!) displays an error message when a value in a field is invalid
     // or a success message when everything is fine.
-    function saveEmployee2() {
+    // WHEN SUCCESSFUL, THE MESSAGE SHOULD BE ON A MODAL WINDOW, NOT ON ALERT !!!
+    // MOREOVER, THE FUNCTION MUST PUT THE NEW DATA IN THE DATA BASE !
+    function saveEmployee() {
         // Conditions used : If there is 0 or 1 character OR if there is a number.
         if (firstNameInputValue.length < 2 || !/^[^\d]+$/.test(firstNameInputValue)) {
             alert("The first name field is invalid.")
@@ -81,17 +81,125 @@ const CreateEmployee = () => {
         else if (cityInputValue === "" || !/^[^\d]+$/.test(cityInputValue)) {
             alert("The city field is invalid.")
         }
+        else if (stateSelectedOption === null) {
+            alert("The state field is empty.")
+        }
         // Conditions used : If the field is empty OR if the number is less than 5 digits long
         // OR if the number is more than 5 digits long.
         else if (zipCodeInputValue === "" || zipCodeInputValue < 10000 || zipCodeInputValue >= 100000) {
             alert("The zip code field is invalid.")
         }
+        else if (deptSelectedOption === null) {
+            alert("The department field is empty.")
+        }
+        // Ici, lancer la modale avec le message plutôt qu'une boite d'alerte...
         else {alert("Employee Created!")}
     }
 
     // Customization of the input in the <Datetime/> component.
     let inputProps = {
         className: "dateLib"
+    }
+
+    // Data for the imported selects.
+    const stateOptions = [
+        {value: "alabama", label: "Alabama"},
+        {value: "alaska", label: "Alaska"},
+        {value: "american samoa", label: "American Samoa"},
+        {value: "arizona", label: "Arizona"},
+        {value: "arkansas", label: "Arkansas"},
+        {value: "california", label: "California"},
+        {value: "colorado", label: "Colorado"},
+        {value: "connecticut", label: "Connecticut"},
+        {value: "delaware", label: "Delaware"},
+        {value: "district of columbia", label: "District Of Columbia"},
+        {value: "federated states of micronesia", label: "Federated States Of Micronesia"},
+        {value: "florida", label: "Florida"},
+        {value: "georgia", label: "Georgia"},
+        {value: "guam", label: "Guam"},
+        {value: "hawaii", label: "Hawaii"},
+        {value: "idaho", label: "Idaho"},
+        {value: "illinois", label: "Illinois"},
+        {value: "indiana", label: "Indiana"},
+        {value: "iowa", label: "Iowa"},
+        {value: "kansas", label: "Kansas"},
+        {value: "kentucky", label: "Kentucky"},
+        {value: "louisiana", label: "Louisiana"},
+        {value: "maine", label: "Maine"},
+        {value: "marshall islands", label: "Marshall Islands"},
+        {value: "maryland", label: "Maryland"},
+        {value: "massachusetts", label: "Massachusetts"},
+        {value: "michigan", label: "Michigan"},
+        {value: "minnesota", label: "Minnesota"},
+        {value: "mississippi", label: "Mississippi"},
+        {value: "missouri", label: "Missouri"},
+        {value: "montana", label: "Montana"},
+        {value: "nebraska", label: "Nebraska"},
+        {value: "nevada", label: "Nevada"},
+        {value: "new hampshire", label: "New Hampshire"},
+        {value: "new jersey", label: "New Jersey"},
+        {value: "new mexico", label: "New Mexico"},
+        {value: "new york", label: "New York"},
+        {value: "north carolina", label: "North Carolina"},
+        {value: "north dakota", label: "North Dakota"},
+        {value: "northern mariana islands", label: "Northern Mariana Islands"},
+        {value: "ohio", label: "Ohio"},
+        {value: "oklahoma", label: "Oklahoma"},
+        {value: "oregon", label: "Oregon"},
+        {value: "palau", label: "Palau"},
+        {value: "pennsylvania", label: "Pennsylvania"},
+        {value: "puerto rico", label: "Puerto Rico"},
+        {value: "rhode island", label: "Rhode Island"},
+        {value: "south carolina", label: "South Carolina"},
+        {value: "south dakota", label: "South Dakota"},
+        {value: "tennessee", label: "Tennessee"},
+        {value: "texas", label: "Texas"},
+        {value: "utah", label: "Utah"},
+        {value: "vermont", label: "Vermont"},
+        {value: "virgin islands", label: "Virgin Islands"},
+        {value: "virginia", label: "Virginia"},
+        {value: "washington", label: "Washington"},
+        {value: "west virginia", label: "West Virginia"},
+        {value: "wisconsin", label: "Wisconsin"},
+        {value: "wyoming", label: "Wyoming"}
+    ]
+    const deptOptions = [
+        {value: "sales", label: "Sales"},
+        {value: "marketing", label: "Marketing"},
+        {value: "engineering", label: "Engineering"},
+        {value: "human resources", label: "Human Resources"},
+        {value: "legal", label: "Legal"}
+    ]
+
+    // Styles for the imported selects.
+    const customStyles = {
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? "black" : "rgb(240, 240, 240)",
+            color: state.isSelected ? "white" : "black",
+            fontSize: "16px",
+            borderBottom: "1px black solid",
+            ":hover": {
+                backgroundColor: "rgb(200, 200, 255)",
+                color: "black"
+            }
+        }),
+        control: () => ({
+            // None of react-select's styles are passed to <Control/>.
+            display: "flex",
+            backgroundColor: "rgb(240, 240, 240)",
+            width: "260px",
+            fontFamily: "Verdana, Geneva, Tahoma, sans-serif",
+            fontSize: "16px",
+            border: "1px black solid",
+            borderRadius: "5px"
+        }),
+        singleValue: (provided, state) => {
+          const opacity = state.isDisabled ? 0.5 : 1;
+          const transition = 'opacity 300ms';
+      
+          return { ...provided, opacity, transition };
+        }
     }
     
     return (
@@ -111,9 +219,6 @@ const CreateEmployee = () => {
                         <Input type="text" id="first-name" value={firstNameInputValue}
                         onChange={(e) => setFirstNameInputValue(e.target.value)}/><br/>
                         
-                        <Button onClick={saveEmployee2}>Save</Button>
-                        <span>&nbsp;Bouton provisoire pour test</span>
-
                         <Label htmlFor="last-name">Last Name</Label>
                         <Input type="text" id="last-name" value={lastNameInputValue}
                         onChange={(e) => setLastNameInputValue(e.target.value)}/>
@@ -144,67 +249,9 @@ const CreateEmployee = () => {
                             onChange={(e) => setCityInputValue(e.target.value)}/>
 
                             <Label htmlFor="state">State</Label>
-                            <Select name="state" id="state">
-                                <option>Alabama</option>
-                                <option>Alaska</option>
-                                <option>American Samoa</option>
-                                <option>Arizona</option>
-                                <option>Arkansas</option>
-                                <option>California</option>
-                                <option>Colorado</option>
-                                <option>Connecticut</option>
-                                <option>Delaware</option>
-                                <option>District Of Columbia</option>
-                                <option>Federated States Of Micronesia</option>
-                                <option>Florida</option>
-                                <option>Georgia</option>
-                                <option>Guam</option>
-                                <option>Hawaii</option>
-                                <option>Idaho</option>
-                                <option>Illinois</option>
-                                <option>Indiana</option>
-                                <option>Iowa</option>
-                                <option>Kansas</option>
-                                <option>Kentucky</option>
-                                <option>Louisiana</option>
-                                <option>Maine</option>
-                                <option>Marshall Islands</option>
-                                <option>Maryland</option>
-                                <option>Massachusetts</option>
-                                <option>Michigan</option>
-                                <option>Minnesota</option>
-                                <option>Mississippi</option>
-                                <option>Missouri</option>
-                                <option>Montana</option>
-                                <option>Nebraska</option>
-                                <option>Nevada</option>
-                                <option>New Hampshire</option>
-                                <option>New Jersey</option>
-                                <option>New Mexico</option>
-                                <option>New York</option>
-                                <option>North Carolina</option>
-                                <option>North Dakota</option>
-                                <option>Northern Mariana Islands</option>
-                                <option>Ohio</option>
-                                <option>Oklahoma</option>
-                                <option>Oregon</option>
-                                <option>Palau</option>
-                                <option>Pennsylvania</option>
-                                <option>Puerto Rico</option>
-                                <option>Rhode Island</option>
-                                <option>South Carolina</option>
-                                <option>South Dakota</option>
-                                <option>Tennessee</option>
-                                <option>Texas</option>
-                                <option>Utah</option>
-                                <option>Vermont</option>
-                                <option>Virgin Islands</option>
-                                <option>Virginia</option>
-                                <option>Washington</option>
-                                <option>West Virginia</option>
-                                <option>Wisconsin</option>
-                                <option>Wyoming</option>
-                            </Select>
+                            <Select options={stateOptions} defaultValue={stateSelectedOption}
+                            onChange={setStateSelectedOption} menuPlacement="bottom"
+                            id="state" styles={customStyles}/>
 
                             <Label htmlFor="zip-code">Zip Code</Label>
                             <Input type="number" id="zip-code" value={zipCodeInputValue}
@@ -212,17 +259,12 @@ const CreateEmployee = () => {
                         </Fieldset>
 
                         <Label htmlFor="department">Department</Label>
-                        <Select name="department" id="department">
-                            <option>Sales</option>
-                            <option>Marketing</option>
-                            <option>Engineering</option>
-                            <option>Human Resources</option>
-                            <option>Legal</option>
-                        </Select>
+                        <Select options={deptOptions} defaultValue={deptSelectedOption}
+                        onChange={setDeptSelectedOption} menuPlacement="top"
+                        id="department" styles={customStyles}/>
                     </form>
 
-                    {/*<Button onClick={saveEmployee}>Save</Button>*/}
-                    <Button onClick={saveEmployee2}>Save</Button>
+                    <Button onClick={saveEmployee}>Save</Button>
                 </Container>
                 {/*<div id="confirmation" className="modal">Employee Created!</div>*/}
             </main>
