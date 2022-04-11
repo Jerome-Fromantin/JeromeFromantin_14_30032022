@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import styled from 'styled-components'
-// Imports to use the table in the page.
+// Imports to use the table library in the page.
 import { useMemo, useState } from 'react'
 import { useTable, useSortBy, usePagination, useGlobalFilter, useAsyncDebounce } from 'react-table'
 import FakeData from '../source/fakeData'
