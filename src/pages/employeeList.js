@@ -168,17 +168,13 @@ const EmployeeList = () => {
             </Helmet>
             <Container id="employee-div">
                 <h1>Current Employees</h1>
-                <table id="employee-table" className="display"></table>
-                {/* Above is the original table, now invisible. */}
-
-                {/* Lien de la doc : https://react-table.tanstack.com/docs/overview */}
 
                 <AboveTable>
                     <div>
                         Show&nbsp;
                         <select name="entries" id="entries" value={pageSize}
                         onChange={e => {setPageSize(Number(e.target.value))}}>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 25, 50, 100].map(pageSize => (
+                            {[2, 3, 4, 5, 10, 25, 50, 100].map(pageSize => (
                                 <option key={pageSize} value={pageSize}>{pageSize}</option>
                             ))}
                         </select>
