@@ -1,0 +1,45 @@
+.choices {
+    position: relative;
+    display: inline-block;
+    width: 260px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 16px;
+    margin: 0 auto
+}
+
+.closedChoices {
+    cursor: pointer;
+    background: rgb(240, 240, 240);
+    padding: 10px 0 10px 15px;
+    border: 1px black solid;
+    border-radius: 5px
+}
+.closedChoices:hover {
+    background: rgb(200, 200, 255)
+}
+
+.hideOpenedChoices {
+    display: none
+}
+
+.showOpenedChoices {
+    position: absolute;
+    left: 0;
+    display: block;
+    background: rgb(240, 240, 240);
+    width: 258px;
+    border-width: 1px 1px 0 1px;
+    border-color: black;
+    border-style: solid
+}
+.showOpenedChoices:hover {
+    cursor: pointer
+}
+
+.openedChoice {
+    padding: 10px 0 10px 15px;
+    border-bottom: 1px black solid
+}
+.openedChoice:hover {
+    background: rgb(200, 200, 255)
+}

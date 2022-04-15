@@ -7,6 +7,8 @@ import 'react-datetime/css/react-datetime.css'
 import '../index.css'
 // Import to use the select library in the page.
 import Select from 'react-select'
+// Import to use my own dropdown in the page.
+import Dropdown from '../components/Dropdown'
 
 // Use of styled components.
 const Title = styled.div`
@@ -265,6 +267,9 @@ const CreateEmployee = () => {
                     </form>
 
                     <Button onClick={saveEmployee}>Save</Button>
+
+                    <p>Ci-dessous, menu déroulant à venir...</p>
+                    <Dropdown/>
                 </Container>
                 {/*<div id="confirmation" className="modal">Employee Created!</div>*/}
             </main>
