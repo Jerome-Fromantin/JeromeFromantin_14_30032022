@@ -3,19 +3,50 @@
     display: inline-block;
     width: 260px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     margin: 0 auto
 }
 
 .closedChoices {
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
     background: rgb(240, 240, 240);
-    padding: 10px 0 10px 15px;
+    padding: 10px 10px 10px 15px;
     border: 1px black solid;
     border-radius: 5px
 }
 .closedChoices:hover {
     background: rgb(200, 200, 255)
+}
+
+.noChosen {
+    color: grey
+}
+.chosen {
+    color: black
+}
+
+.arrows {
+    display: inline-block
+}
+
+.showArrowDown {
+    display: block
+}
+.hideArrowDown {
+    display: none
+}
+
+.arrowImg {
+    width: 16px
+}
+
+.hideArrowUp {
+    display: none
+}
+.showArrowUp {
+    display: block
 }
 
 .hideOpenedChoices {
@@ -27,8 +58,10 @@
     left: 0;
     display: block;
     background: rgb(240, 240, 240);
+    height: 185px;
     width: 258px;
-    border-width: 1px 1px 0 1px;
+    overflow: auto;
+    border-width: 1px;
     border-color: black;
     border-style: solid
 }
@@ -37,9 +70,17 @@
 }
 
 .openedChoice {
-    padding: 10px 0 10px 15px;
-    border-bottom: 1px black solid
+    padding: 10px 0 10px 15px
 }
 .openedChoice:hover {
     background: rgb(200, 200, 255)
+}
+
+.openedActiveChoice {
+    background: black;
+    color: white
+}
+.openedActiveChoice:hover {
+    background: rgb(100, 100, 255);
+    color: black
 }
