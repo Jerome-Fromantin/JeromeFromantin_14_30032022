@@ -57,6 +57,7 @@
     position: absolute;
     left: 0;
     display: block;
+    z-index: 1;
     background: rgb(240, 240, 240);
     height: 185px;
     width: 258px;

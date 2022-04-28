@@ -3,13 +3,19 @@ import { Link } from 'react-router-dom'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import styled from 'styled-components'
 import '../index.css'
+
 // Imports to use the datetime library in the page.
 import Datetime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css'
+
 // Import to use the select library in the page.
-import Select from 'react-select'
+//import Select from 'react-select'
 // Import to use my own dropdown in the page.
 import Dropdown from '../components/Dropdown'
+
+// Import to add an employee to the database.
+import FakeData from '../source/fakeData'
+
 // Import to use my own modal library in the page.
 //import Modale from 'react-modale-jf'
 
@@ -53,16 +59,39 @@ window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on && window.__REACT_DEVTOOLS_GLOBAL_HOOK_
 const CreateEmployee = () => {
     const [firstNameInputValue, setFirstNameInputValue] = useState("")
     const [lastNameInputValue, setLastNameInputValue] = useState("")
+
     const [birthDateInputValue, setBirthDateInputValue] = useState("")
     const [startDateInputValue, setStartDateInputValue] = useState("")
+
     const [streetInputValue, setStreetInputValue] = useState("")
     const [cityInputValue, setCityInputValue] = useState("")
-    const [stateSelectedOption, setStateSelectedOption] = useState(null)
+
+    // To update the state of the first <Select/> component from the "react-select" library.
+    //const [stateSelectedOption, setStateSelectedOption] = useState(null)
+    // To update the state of the first <Dropdown/> component.
+    const [stateChoice, setStateChoice] = useState("Choose...")
+
     const [zipCodeInputValue, setZipCodeInputValue] = useState("")
-    const [deptSelectedOption, setDeptSelectedOption] = useState(null)
+
+    // To update the state of the second <Select/> component from the "react-select" library.
+    //const [deptSelectedOption, setDeptSelectedOption] = useState(null)
+    // To update the state of the second <Dropdown/> component.
+    const [deptChoice, setDeptChoice] = useState("Choose...")
+
     // The different "useState" above allow to keep the data of the different fields in the form.
+
     //const [open, setOpen] = useState(false)
     // This last one is used by the modal at the end of the page.
+
+    function getStateChoice(e) {
+        const chosenLabel = e.target.innerText
+        setStateChoice(chosenLabel)
+    }
+
+    function getDeptChoice(e) {
+        const chosenLabel = e.target.innerText
+        setDeptChoice(chosenLabel)
+    }
 
     // This function (TO FINISH !!) displays an error message when a value in a field is invalid
     // or a success message when everything is fine.
@@ -76,31 +105,56 @@ const CreateEmployee = () => {
         else if (lastNameInputValue.length < 2 || !/^[^\d]+$/.test(lastNameInputValue)) {
             alert("The last name field is invalid.")
         }
+
         else if (birthDateInputValue === "") {
             alert("The birth date field is empty.")
         }
         else if (startDateInputValue === "") {
             alert("The start date field is empty.")
         }
+
         else if (streetInputValue.length < 2) {
             alert("The street field is invalid.")
         }
         else if (cityInputValue === "" || !/^[^\d]+$/.test(cityInputValue)) {
             alert("The city field is invalid.")
         }
-        else if (stateSelectedOption === null) {
+
+        /*else if (stateSelectedOption === null) {*/
+        else if (stateChoice === "Choose...") {
             alert("The state field is empty.")
         }
+
         // Conditions used : If the field is empty OR if the number is less than 5 digits long
         // OR if the number is more than 5 digits long.
         else if (zipCodeInputValue === "" || zipCodeInputValue < 10000 || zipCodeInputValue >= 100000) {
             alert("The zip code field is invalid.")
         }
-        else if (deptSelectedOption === null) {
+
+        /*else if (deptSelectedOption === null) {*/
+        else if (deptChoice === "Choose...") {
             alert("The department field is empty.")
         }
+
         // Ici, lancer la modale avec le message plutôt qu'une boite d'alerte...
-        else {alert("Employee Created!")}
+        else {
+            console.log(FakeData)
+            alert("Employee Created!")
+            /*
+            FakeData.unshift({
+                firstName: firstNameInputValue,
+                lastName: lastNameInputValue,
+                startDate: startDateInputValue,
+                department: deptChoice,
+                birthDate: birthDateInputValue,
+                street: streetInputValue,
+                city: cityInputValue,
+                state: stateChoice,
+                zipCode: zipCodeInputValue
+            })
+            console.log(FakeData)
+            */
+        }
         //else {displayModale()}
     }
 
@@ -109,7 +163,8 @@ const CreateEmployee = () => {
         className: "dateLib"
     }
 
-    // Data for the imported selects.
+    // Data for the <Select/> components from the "react-select" library.
+    /*
     const stateOptions = [
         {value: "alabama", label: "Alabama"},
         {value: "alaska", label: "Alaska"},
@@ -178,8 +233,10 @@ const CreateEmployee = () => {
         {value: "human resources", label: "Human Resources"},
         {value: "legal", label: "Legal"}
     ]
+    */
 
-    // Styles for the imported selects.
+    // Styles for the <Select/> components from the "react-select" library.
+    /*
     const customStyles = {
         option: (provided, state) => ({
             ...provided,
@@ -209,7 +266,9 @@ const CreateEmployee = () => {
           return { ...provided, opacity, transition };
         }
     }
+    */
 
+    // Data for the <Dropdown/> components.
     const stateChoices = [
         {value: "alabama", label: "Alabama"},
         {value: "alaska", label: "Alaska"},
@@ -336,9 +395,12 @@ const CreateEmployee = () => {
                             onChange={(e) => setCityInputValue(e.target.value)}/>
 
                             <Label htmlFor="state">State</Label>
-                            <Select options={stateOptions} defaultValue={stateSelectedOption}
+                            {/* The component commented below is used by the "react-select" library. */}
+                            {/*<Select options={stateOptions} defaultValue={stateSelectedOption}
                             onChange={setStateSelectedOption} menuPlacement="bottom"
-                            id="state" styles={customStyles}/>
+                            id="state" styles={customStyles}/>*/}
+                            <Dropdown choices={stateChoices} onClick={getStateChoice} choice={stateChoice}
+                            id="state"/>
 
                             <Label htmlFor="zip-code">Zip Code</Label>
                             <Input type="number" id="zip-code" value={zipCodeInputValue}
@@ -346,17 +408,15 @@ const CreateEmployee = () => {
                         </Fieldset>
 
                         <Label htmlFor="department">Department</Label>
-                        <Select options={deptOptions} defaultValue={deptSelectedOption}
+                        {/* The component commented below is used by the "react-select" library. */}
+                        {/*<Select options={deptOptions} defaultValue={deptSelectedOption}
                         onChange={setDeptSelectedOption} menuPlacement="top"
-                        id="department" styles={customStyles}/>
+                        id="department" styles={customStyles}/>*/}
+                        <Dropdown choices={deptChoices} onClick={getDeptChoice} choice={deptChoice}
+                        id="department"/>
                     </form>
 
                     <Button onClick={saveEmployee}>Save</Button>
-
-                    <p>Ci-dessous, menu déroulant "states" à venir...</p>
-                    <Dropdown choices={stateChoices}/>
-                    <p>Ci-dessous, menu déroulant "depts" à venir...</p>
-                    <Dropdown choices={deptChoices}/>
                 </Container>
                 {/*<Modale message="Employee Created!" open={open} onClose={closeModale}/>*/}
             </main>
