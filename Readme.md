@@ -2,7 +2,7 @@ Ce travail est réalisé dans le cadre de la formation "Développeur JavaScript 
 
 Ce projet 14 consiste en la migration d'une application et de ses plugins JQuery vers une application React avec des librairies React de npm.
 
-Mise à jour : 28-04-2022 18h35
+Mise à jour : 03-05-2022 18h30
 
 Travail réalisé :
 - Création de l'application React pour la migration.
@@ -23,13 +23,14 @@ Travail réalisé :
 - Finition du tableau et de ses fonctions (classement, pagination, tri global) et donc de l'implémentation de la 2ème page.
 - Installation de la librairie "react-select" pour utiliser des menus déroulants dans la 1ère page.
 - Mise en place et customisation des menus déroulants et donc fin de l'implémentation de la 1ère page.
-- Finition de la librairie modale sur l'autre repository.
+- Repository modale : Finition de la 1ère version de la librairie.
 - Test d'installation de la librairie modale.
 - Finition du composant `<Dropdown/>` pour remplacer la librairie "react-select".
-- Amélioration de la fonction de sauvegarde du nouvel employé.
+- Repository modale : nouvelle version de la librairie retravaillée puis publiée sur npm.
+- Installation de la 2ème version de la librairie modale.
+- Finition de la fonction de soumission du formulaire : vérification de la validité des champs, sauvegarde du nouvel employé, appel de la modale.
+- Essai d'installation d'un reset des champs du formulaire à la fermeture de la modale.
 
 Travail à faire (entre autres) :
-- Retravailler la librairie modale puis publier sa version finale sur npm.
-- Installer dans l'appli la librairie modale créée.
+- Régler le reset ou le supprimer.
 - Faire les tests de performance des 2 versions de l'application.
-- Et d'autres choses ??
