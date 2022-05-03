@@ -13,11 +13,12 @@ import 'react-datetime/css/react-datetime.css'
 // Import to use my own dropdown in the page.
 import Dropdown from '../components/Dropdown'
 
-// Import to add an employee to the database.
+// Import to add an employee to the fake database.
 import FakeData from '../source/fakeData'
 
-// Import to use my own modal library in the page.
-//import Modale from 'react-modale-jf'
+// Imports to use my own modal library in the page.
+import { Modale } from 'react-modale-jf'
+import 'react-modale-jf/dist/index.css'
 
 // Use of styled components.
 const Title = styled.div`
@@ -50,7 +51,7 @@ const Fieldset = styled.fieldset`
 `
 const Button = styled.button`
     ${borderStyle}
-    margin-top: 20px;
+    margin: 20px;
 `
 
 // This function allows to use React Devtools in Firefox.
@@ -80,12 +81,13 @@ const CreateEmployee = () => {
 
     // The different "useState" above allow to keep the data of the different fields in the form.
 
-    //const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false)
     // This last one is used by the modal at the end of the page.
 
     function getStateChoice(e) {
         const chosenLabel = e.target.innerText
         setStateChoice(chosenLabel)
+        setDivClass("chosen") // ????
     }
 
     function getDeptChoice(e) {
@@ -93,10 +95,9 @@ const CreateEmployee = () => {
         setDeptChoice(chosenLabel)
     }
 
-    // This function (TO FINISH !!) displays an error message when a value in a field is invalid
-    // or a success message when everything is fine.
-    // WHEN SUCCESSFUL, THE MESSAGE SHOULD BE ON A MODAL WINDOW, NOT ON ALERT !!!
-    // MOREOVER, THE FUNCTION MUST PUT THE NEW DATA IN THE DATA BASE !
+    // This function displays an error message with "alert()" when a value in a field is invalid
+    // or a success message in a modal window when everything is fine.
+    // When successful, the new data is added temporarily (until the next page refresh) to the data array.
     function saveEmployee() {
         // Conditions used : If there is 0 or 1 character OR if there is a number.
         if (firstNameInputValue.length < 2 || !/^[^\d]+$/.test(firstNameInputValue)) {
@@ -123,11 +124,13 @@ const CreateEmployee = () => {
         /*else if (stateSelectedOption === null) {*/
         else if (stateChoice === "Choose...") {
             alert("The state field is empty.")
+            console.log(stateChoice.className)
         }
 
         // Conditions used : If the field is empty OR if the number is less than 5 digits long
         // OR if the number is more than 5 digits long.
         else if (zipCodeInputValue === "" || zipCodeInputValue < 10000 || zipCodeInputValue >= 100000) {
+            console.log(stateChoice.className)
             alert("The zip code field is invalid.")
         }
 
@@ -136,26 +139,54 @@ const CreateEmployee = () => {
             alert("The department field is empty.")
         }
 
-        // Ici, lancer la modale avec le message plutôt qu'une boite d'alerte...
         else {
-            console.log(FakeData)
-            alert("Employee Created!")
-            /*
+            // The conditions below check the numbers of the day and the month of the 2 date fields.
+            // If the day's number is below 10 or if the month's number is below 9 (because of the index),
+            // a "0" is added before the number.
+            const zero = "0"
+            let startDateDay
+            let startDateMonth
+            const startDateYear = startDateInputValue._d.getFullYear()
+            let birthDateDay
+            let birthDateMonth
+            const birthDateYear = birthDateInputValue._d.getFullYear()
+
+            if (startDateInputValue._d.getDate() < 10) {
+                startDateDay = zero.concat(startDateInputValue._d.getDate())
+            }
+            else {startDateDay = startDateInputValue._d.getDate()}
+            if (startDateInputValue._d.getMonth() < 9) {
+                startDateMonth = zero.concat(startDateInputValue._d.getMonth() + 1)
+            }
+            else {startDateMonth = startDateInputValue._d.getMonth() + 1}
+            if (birthDateInputValue._d.getDate() < 10) {
+                birthDateDay = zero.concat(birthDateInputValue._d.getDate())
+            }
+            else {birthDateDay = birthDateInputValue._d.getDate()}
+            if (birthDateInputValue._d.getMonth() < 9) {
+                birthDateMonth = zero.concat(birthDateInputValue._d.getMonth() + 1)
+            }
+            else {birthDateMonth = birthDateInputValue._d.getMonth() + 1}
+
+            const startDateFull = startDateDay + "/" + startDateMonth + "/" + startDateYear
+            const birthDateFull = birthDateDay + "/" + birthDateMonth + "/" + birthDateYear
+
+            // This function adds the new data at the beginning of the FakeData array.
             FakeData.unshift({
                 firstName: firstNameInputValue,
                 lastName: lastNameInputValue,
-                startDate: startDateInputValue,
+                startDate: startDateFull,
                 department: deptChoice,
-                birthDate: birthDateInputValue,
+                birthDate: birthDateFull,
                 street: streetInputValue,
                 city: cityInputValue,
                 state: stateChoice,
                 zipCode: zipCodeInputValue
             })
-            console.log(FakeData)
-            */
+
+            // This function finally displays the modal when everything else is done.
+            displayModale()
         }
-        //else {displayModale()}
     }
 
     // Customization of the input in the <Datetime/> component.
@@ -338,15 +369,32 @@ const CreateEmployee = () => {
         {value: "legal", label: "Legal"}
     ]
 
+    // TEST !!
+    const [divClass, setDivClass] = useState("noChosen")
+
     // The 2 functions below are used by the modal library I created.
-    /*
     function displayModale() {
         setOpen(true)
     }
     function closeModale() {
         setOpen(false)
+        console.log("Modale fermée, il faut un reset !!")
+        // Test de reset
+        setFirstNameInputValue("")
+        setLastNameInputValue("")
+        setBirthDateInputValue("") // Problème : La date reste visible.
+        setStartDateInputValue("") // Problème : La date reste visible.
+        setStreetInputValue("")
+        setCityInputValue("")
+        setStateChoice("Choose...") // Problème : La classe "noChosen" ne revient pas.
+        setDivClass("noChosen")
+        setZipCodeInputValue("")
+        setDeptChoice("Choose...") // Problème : La classe "noChosen" ne revient pas.
     }
-    */
+
+    function stopPropag(e) {
+        e.stopPropagation()
+    }
     
     return (
         <HelmetProvider>
@@ -358,16 +406,16 @@ const CreateEmployee = () => {
                     <h1>HRnet</h1>
                 </Title>
                 <Container>
-                    <Link to="/employeeList">View Current Employees</Link>
+                    <Link to="/employeeList" onClick={stopPropag}>View Current Employees</Link>
                     <h2>Create Employee</h2>
                     <form action="#" id="create-employee">
                         <Label htmlFor="first-name">First Name</Label>
                         <Input type="text" id="first-name" value={firstNameInputValue}
-                        onChange={(e) => setFirstNameInputValue(e.target.value)}/><br/>
+                        onChange={(e) => setFirstNameInputValue(e.target.value)} onClick={stopPropag}/><br/>
                         
                         <Label htmlFor="last-name">Last Name</Label>
                         <Input type="text" id="last-name" value={lastNameInputValue}
-                        onChange={(e) => setLastNameInputValue(e.target.value)}/>
+                        onChange={(e) => setLastNameInputValue(e.target.value)} onClick={stopPropag}/>
 
                         <Label htmlFor="date-of-birth">Date of Birth</Label>
                         <Datetime id="date-of-birth" inputProps={inputProps} value={birthDateInputValue}
@@ -388,11 +436,11 @@ const CreateEmployee = () => {
 
                             <Label htmlFor="street">Street</Label>
                             <Input type="text" id="street" value={streetInputValue}
-                            onChange={(e) => setStreetInputValue(e.target.value)}/>
+                            onChange={(e) => setStreetInputValue(e.target.value)} onClick={stopPropag}/>
 
                             <Label htmlFor="city">City</Label>
                             <Input type="text" id="city" value={cityInputValue}
-                            onChange={(e) => setCityInputValue(e.target.value)}/>
+                            onChange={(e) => setCityInputValue(e.target.value)} onClick={stopPropag}/>
 
                             <Label htmlFor="state">State</Label>
                             {/* The component commented below is used by the "react-select" library. */}
@@ -400,11 +448,11 @@ const CreateEmployee = () => {
                             onChange={setStateSelectedOption} menuPlacement="bottom"
                             id="state" styles={customStyles}/>*/}
                             <Dropdown choices={stateChoices} onClick={getStateChoice} choice={stateChoice}
-                            id="state"/>
+                            id="state" className={divClass}/>
 
                             <Label htmlFor="zip-code">Zip Code</Label>
                             <Input type="number" id="zip-code" value={zipCodeInputValue}
-                            onChange={(e) => setZipCodeInputValue(e.target.value)}/>
+                            onChange={(e) => setZipCodeInputValue(e.target.value)} onClick={stopPropag}/>
                         </Fieldset>
 
                         <Label htmlFor="department">Department</Label>
@@ -418,7 +466,7 @@ const CreateEmployee = () => {
 
                     <Button onClick={saveEmployee}>Save</Button>
                 </Container>
-                {/*<Modale message="Employee Created!" open={open} onClose={closeModale}/>*/}
+                <Modale message="Employee Created!" open={open} onClose={closeModale}/>
             </main>
         </HelmetProvider>
     )
