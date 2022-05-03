@@ -11,6 +11,7 @@
     "react-datetime": "^3.1.1",
     "react-dom": "^18.0.0",
     "react-helmet-async": "^1.2.3",
+    "react-modale-jf": "^2.0.1",
     "react-scripts": "5.0.0",
     "react-select": "^5.2.2",
     "react-table": "^7.7.0",
