@@ -25,7 +25,6 @@ const Dropdown = (props) => {
         openMenu.current.classList.toggle("showOpenedChoices")
         open === false ? (setOpen(true)) : (setOpen(false))
         e.stopPropagation()
-        //testReset()
     }
 
     function selectChoice(e) {
@@ -47,31 +46,12 @@ const Dropdown = (props) => {
         const myTarget = e.target
         if (!myTarget.matches(".closedChoices") && !myTarget.matches(".noChosen") && !myTarget.matches(".chosen")
         && !myTarget.matches(".arrowImg") && !myTarget.matches(".openedChoice") && (open === true)) {
-            arrowDown.current.classList.remove("hideArrowDown")
-            arrowUp.current.classList.remove("showArrowUp")
-            openMenu.current.classList.remove("showOpenedChoices")
+            arrowDown?.current?.classList?.remove("hideArrowDown")
+            arrowUp?.current?.classList?.remove("showArrowUp")
+            openMenu?.current?.classList?.remove("showOpenedChoices")
             setOpen(false)
-            //testReset()
         }
     })
-
-    // FONCTION TEST POUR RESET !!
-    /*function testReset() {
-        if (props.choice === "Choose..." && chosen.current.classList.contains("chosen")) {
-            chosen.current.classList.replace("chosen", "noChosen")
-            console.log("reset")
-            //console.log("props.choice : CHOOSE !!!")
-            //console.log("{chosen} current classlist : " + chosen.current.classList)
-        }
-        else {
-            if (chosen.current.classList.contains("noChosen")) {
-                chosen.current.classList.replace("noChosen", "chosen")
-            }
-            console.log("pas reset")
-            //console.log("props.choice : " + props.choice)
-            //console.log("{chosen} current classlist : " + chosen.current.classList)
-        }
-    }*/
 
     return (<div>
         <div className="choices" onClick={props.onClick}>
