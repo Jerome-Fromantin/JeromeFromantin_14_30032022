@@ -2,7 +2,7 @@ Ce travail est réalisé dans le cadre de la formation "Développeur JavaScript 
 
 Ce projet 14 consiste en la migration d'une application et de ses plugins JQuery vers une application React avec des librairies React de npm.
 
-Mise à jour : 03-05-2022 18h30
+Mise à jour : 05-05-2022 18h20
 
 Travail réalisé :
 - Création de l'application React pour la migration.
@@ -29,8 +29,8 @@ Travail réalisé :
 - Repository modale : nouvelle version de la librairie retravaillée puis publiée sur npm.
 - Installation de la 2ème version de la librairie modale.
 - Finition de la fonction de soumission du formulaire : vérification de la validité des champs, sauvegarde du nouvel employé, appel de la modale.
-- Essai d'installation d'un reset des champs du formulaire à la fermeture de la modale.
+- Ajout d'un "Context" React à l'application pour les données des employés.
+- Amélioration du code pour tenir compte des tests de Lighthouse.
+- Ajout d'un dossier "lighthouse" pour héberger les rapports de résultats des 2 pages de chaque version de l'application, en html et en pdf.
 
-Travail à faire (entre autres) :
-- Régler le reset ou le supprimer.
-- Faire les tests de performance des 2 versions de l'application.
+Ce projet est désormais terminé mais peut éventuellement être amélioré.
