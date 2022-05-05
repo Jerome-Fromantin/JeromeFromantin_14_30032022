@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import styled from 'styled-components'
 import '../index.css'
+import EmployeeContext from '../store/context';
 
 // Imports to use the datetime library in the page.
 import Datetime from 'react-datetime'
@@ -12,9 +13,6 @@ import 'react-datetime/css/react-datetime.css'
 //import Select from 'react-select'
 // Import to use my own dropdown in the page.
 import Dropdown from '../components/Dropdown'
-
-// Import to add an employee to the fake database.
-import FakeData from '../source/fakeData'
 
 // Imports to use my own modal library in the page.
 import { Modale } from 'react-modale-jf'
@@ -36,6 +34,9 @@ const Label = styled.label`
     display: block;
     margin-top: 1rem;
     margin-bottom: 10px;
+`
+const LabelName = styled.div`
+    margin-bottom: -15px;
 `
 const borderStyle = `
     border: 1px black solid;
@@ -84,10 +85,12 @@ const CreateEmployee = () => {
     const [open, setOpen] = useState(false)
     // This last one is used by the modal at the end of the page.
 
+    // This context uses the "FakeData" array.
+    const context = useContext(EmployeeContext)
+
     function getStateChoice(e) {
         const chosenLabel = e.target.innerText
         setStateChoice(chosenLabel)
-        setDivClass("chosen") // ????
     }
 
     function getDeptChoice(e) {
@@ -97,7 +100,7 @@ const CreateEmployee = () => {
 
     // This function displays an error message with "alert()" when a value in a field is invalid
     // or a success message in a modal window when everything is fine.
-    // When successful, the new data is added temporarily (until the next page refresh) to the data array.
+    // When successful, the new data is added temporarily (until the next session) to the data array.
     function saveEmployee() {
         // Conditions used : If there is 0 or 1 character OR if there is a number.
         if (firstNameInputValue.length < 2 || !/^[^\d]+$/.test(firstNameInputValue)) {
@@ -124,13 +127,11 @@ const CreateEmployee = () => {
         /*else if (stateSelectedOption === null) {*/
         else if (stateChoice === "Choose...") {
             alert("The state field is empty.")
-            console.log(stateChoice.className)
         }
 
         // Conditions used : If the field is empty OR if the number is less than 5 digits long
         // OR if the number is more than 5 digits long.
         else if (zipCodeInputValue === "" || zipCodeInputValue < 10000 || zipCodeInputValue >= 100000) {
-            console.log(stateChoice.className)
             alert("The zip code field is invalid.")
         }
 
@@ -171,8 +172,8 @@ const CreateEmployee = () => {
             const startDateFull = startDateDay + "/" + startDateMonth + "/" + startDateYear
             const birthDateFull = birthDateDay + "/" + birthDateMonth + "/" + birthDateYear
 
-            // This function adds the new data at the beginning of the FakeData array.
-            FakeData.unshift({
+            // This function adds the new data at the beginning of the "FakeData" array.
+            context.addEmployee({
                 firstName: firstNameInputValue,
                 lastName: lastNameInputValue,
                 startDate: startDateFull,
@@ -369,27 +370,12 @@ const CreateEmployee = () => {
         {value: "legal", label: "Legal"}
     ]
 
-    // TEST !!
-    const [divClass, setDivClass] = useState("noChosen")
-
     // The 2 functions below are used by the modal library I created.
     function displayModale() {
         setOpen(true)
     }
     function closeModale() {
         setOpen(false)
-        console.log("Modale fermée, il faut un reset !!")
-        // Test de reset
-        setFirstNameInputValue("")
-        setLastNameInputValue("")
-        setBirthDateInputValue("") // Problème : La date reste visible.
-        setStartDateInputValue("") // Problème : La date reste visible.
-        setStreetInputValue("")
-        setCityInputValue("")
-        setStateChoice("Choose...") // Problème : La classe "noChosen" ne revient pas.
-        setDivClass("noChosen")
-        setZipCodeInputValue("")
-        setDeptChoice("Choose...") // Problème : La classe "noChosen" ne revient pas.
     }
 
     function stopPropag(e) {
@@ -409,59 +395,72 @@ const CreateEmployee = () => {
                     <Link to="/employeeList" onClick={stopPropag}>View Current Employees</Link>
                     <h2>Create Employee</h2>
                     <form action="#" id="create-employee">
-                        <Label htmlFor="first-name">First Name</Label>
-                        <Input type="text" id="first-name" value={firstNameInputValue}
-                        onChange={(e) => setFirstNameInputValue(e.target.value)} onClick={stopPropag}/><br/>
+                        <Label>
+                            <LabelName>First Name</LabelName><br/>
+                            <Input type="text" value={firstNameInputValue}
+                            onChange={(e) => setFirstNameInputValue(e.target.value)} onClick={stopPropag}/>
+                        </Label>
                         
-                        <Label htmlFor="last-name">Last Name</Label>
-                        <Input type="text" id="last-name" value={lastNameInputValue}
-                        onChange={(e) => setLastNameInputValue(e.target.value)} onClick={stopPropag}/>
+                        <Label>
+                            <LabelName>Last Name</LabelName><br/>
+                            <Input type="text" value={lastNameInputValue}
+                            onChange={(e) => setLastNameInputValue(e.target.value)} onClick={stopPropag}/>
+                        </Label>
 
-                        <Label htmlFor="date-of-birth">Date of Birth</Label>
-                        <Datetime id="date-of-birth" inputProps={inputProps} value={birthDateInputValue}
-                        onChange={(value) => setBirthDateInputValue(value)} closeOnSelect={true} timeFormat={false}
-                        dateFormat="DD/MM/YYYY"/>
+                        <Label>
+                            <LabelName>Date of Birth</LabelName><br/>
+                            <Datetime inputProps={inputProps} value={birthDateInputValue}
+                            onChange={(value) => setBirthDateInputValue(value)}
+                            timeFormat={false} dateFormat="DD/MM/YYYY"/>
+                        </Label>
                         {/* "inputProps" allows to customize the appearance of the input,
-                        "closeOnSelect" closes the picker when a day is clicked upon,
                         "timeFormat" hides the time of the day in the picker and in the input and
                         "dateFormat" sets the order of the numbers in the date.*/}
 
-                        <Label htmlFor="start-date">Start Date</Label>
-                        <Datetime id="start-date" inputProps={inputProps} value={startDateInputValue}
-                        onChange={(value) => setStartDateInputValue(value)} closeOnSelect={true} timeFormat={false}
-                        dateFormat="DD/MM/YYYY"/>
+                        <Label>
+                            <LabelName>Start Date</LabelName><br/>
+                            <Datetime inputProps={inputProps} value={startDateInputValue}
+                            onChange={(value) => setStartDateInputValue(value)}
+                            timeFormat={false} dateFormat="DD/MM/YYYY"/>
+                        </Label>
 
                         <Fieldset className="address">
                             <legend>Address</legend>
 
-                            <Label htmlFor="street">Street</Label>
-                            <Input type="text" id="street" value={streetInputValue}
-                            onChange={(e) => setStreetInputValue(e.target.value)} onClick={stopPropag}/>
+                            <Label>
+                                <LabelName>Street</LabelName><br/>
+                                <Input type="text" value={streetInputValue}
+                                onChange={(e) => setStreetInputValue(e.target.value)} onClick={stopPropag}/>
+                            </Label>
 
-                            <Label htmlFor="city">City</Label>
-                            <Input type="text" id="city" value={cityInputValue}
-                            onChange={(e) => setCityInputValue(e.target.value)} onClick={stopPropag}/>
+                            <Label>
+                                <LabelName>City</LabelName><br/>
+                                <Input type="text" value={cityInputValue}
+                                onChange={(e) => setCityInputValue(e.target.value)} onClick={stopPropag}/>
+                            </Label>
 
-                            <Label htmlFor="state">State</Label>
-                            {/* The component commented below is used by the "react-select" library. */}
-                            {/*<Select options={stateOptions} defaultValue={stateSelectedOption}
-                            onChange={setStateSelectedOption} menuPlacement="bottom"
-                            id="state" styles={customStyles}/>*/}
-                            <Dropdown choices={stateChoices} onClick={getStateChoice} choice={stateChoice}
-                            id="state" className={divClass}/>
+                            <Label>
+                                <LabelName>State</LabelName><br/>
+                                {/* The component commented below is used by the "react-select" library. */}
+                                {/*<Select options={stateOptions} defaultValue={stateSelectedOption}
+                                onChange={setStateSelectedOption} menuPlacement="bottom" styles={customStyles}/>*/}
+                                <Dropdown choices={stateChoices} onClick={getStateChoice} choice={stateChoice}/>
+                            </Label>
 
-                            <Label htmlFor="zip-code">Zip Code</Label>
-                            <Input type="number" id="zip-code" value={zipCodeInputValue}
-                            onChange={(e) => setZipCodeInputValue(e.target.value)} onClick={stopPropag}/>
+                            <Label>
+                                <LabelName>Zip Code</LabelName><br/>
+                                <Input type="number" value={zipCodeInputValue}
+                                onChange={(e) => setZipCodeInputValue(e.target.value)} onClick={stopPropag}/>
+                            </Label>
                         </Fieldset>
 
-                        <Label htmlFor="department">Department</Label>
-                        {/* The component commented below is used by the "react-select" library. */}
-                        {/*<Select options={deptOptions} defaultValue={deptSelectedOption}
-                        onChange={setDeptSelectedOption} menuPlacement="top"
-                        id="department" styles={customStyles}/>*/}
-                        <Dropdown choices={deptChoices} onClick={getDeptChoice} choice={deptChoice}
-                        id="department"/>
+                        <Label>
+                            <LabelName>Department</LabelName><br/>
+                            {/* The component commented below is used by the "react-select" library. */}
+                            {/*<Select options={deptOptions} defaultValue={deptSelectedOption}
+                            onChange={setDeptSelectedOption} menuPlacement="top" styles={customStyles}/>*/}
+                            <Dropdown choices={deptChoices} onClick={getDeptChoice} choice={deptChoice}/>
+                        </Label>
                     </form>
 
                     <Button onClick={saveEmployee}>Save</Button>

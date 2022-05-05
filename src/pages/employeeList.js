@@ -5,7 +5,10 @@ import styled from 'styled-components'
 // Imports to use the table library in the page.
 import { useMemo, useState } from 'react'
 import { useTable, useSortBy, usePagination, useGlobalFilter, useAsyncDebounce } from 'react-table'
-import FakeData from '../source/fakeData'
+
+// Imports to use the context.
+import { useContext } from 'react'
+import EmployeeContext from '../store/context'
 
 // Use of styled components.
 const Container = styled.div`
@@ -54,7 +57,7 @@ const Pagispan = styled.span`
         cursor: pointer;
     }
     &.disabled {
-        color: gray;
+        color: dimgrey;
         font-weight: normal;
     }
 `
@@ -67,7 +70,8 @@ function GlobalFilter({globalFilter, setGlobalFilter}) {
     }, 200)
 
     return (
-        <div>Search:&nbsp;
+        <label>
+            Search:&nbsp;
             <Input
                 type="text"
                 value={value || ""}
@@ -76,13 +80,13 @@ function GlobalFilter({globalFilter, setGlobalFilter}) {
                     onChange(e.target.value)
                 }}
             />
-        </div>
+        </label>
     )
 }
 
 const EmployeeList = () => {
-    // Fake data to use the table in the page.
-    const data = useMemo(() => FakeData, [])
+    // This context uses the "FakeData" array.
+    const context = useContext(EmployeeContext)
 
     // Columns of the table.
     const columns = useMemo(() => [
@@ -124,12 +128,13 @@ const EmployeeList = () => {
         }
     ], [])
 
-    // NOTE : "data" and "columns" are necessary words. It won't work without them !!
+    // NOTE : "data" and "columns" are 2 necessary words.
+    // But here, the value of "data" is defined by the use of "context", as shown below.
 
     // We use the hook "useTable" with the data and the columns defined above to create a table instance.
     // In this first hook, we add the hooks we need to have more functionalities.
     const tableInstance = useTable(
-        {columns, data, initialState: {pageIndex: 0}},
+        {columns, data: context.employee, initialState: {pageIndex: 0}},
         useGlobalFilter, useSortBy, usePagination
     )
 
